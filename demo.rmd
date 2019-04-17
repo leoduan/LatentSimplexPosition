@@ -1,0 +1,69 @@
+---
+title: "Illustration of the Simplex Clustering"
+author: Leo Duan
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Generate Data
+
+Simulate two clusters of data
+
+
+```{r, echo=FALSE}
+library(tensorflow)
+library(ggplot2)
+
+setwd("~/git/SimplexEmbedding/")
+
+Y = cbind( c(rnorm(200), rnorm(200)+1), c(rnorm(200), rnorm(200)+1))
+
+ground_truth= rep(c(1:2),each=200)
+df1 =  data.frame(Y1=Y[,1],Y2=Y[,2] , label= as.factor(ground_truth))
+
+#plot the uncertainty
+ggplot(df1)+ geom_point(aes(Y1,Y2,col=label))
+
+```
+
+## Compute the similarity
+
+```{r,echo=FALSE}
+D<- as.matrix(dist(Y))
+
+#empirical selection of bandwidth based on quantile in each row
+b = sqrt(apply(D,1, function(x) quantile(x,prob=0.3)))
+
+S<- exp(-t(D/b)/b)
+
+#first stage: similarity matrix
+image(S)
+```
+
+
+## Fit the model
+
+```{r,echo=FALSE}
+source("LatentSimplex.r")
+
+SC_fit<- SimplexClust(S,lambda = 0)
+
+require(ggplot2)
+
+df =  data.frame(Y1=Y[,1],Y2=Y[,2], prob_assigning_to_cluster1 =SC_fit$P[,1] )
+
+#estimated co-assignment probability matrix
+image(SC_fit$A)
+
+```
+
+
+
+```{r,echo=FALSE}
+#plot the uncertainty
+ggplot(df)+ geom_point(aes(Y1,Y2,col=prob_assigning_to_cluster1))+
+  scale_colour_gradientn(colours = rev(rainbow(2)))
+```
