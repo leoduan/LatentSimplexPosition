@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Simulate two clusters of data
 
 
-```{r, echo=FALSE}
+```{r}
 library(tensorflow)
 library(ggplot2)
 
@@ -31,7 +31,7 @@ ggplot(df1)+ geom_point(aes(Y1,Y2,col=label))
 
 ## Compute the similarity
 
-```{r,echo=FALSE}
+```{r}
 D<- as.matrix(dist(Y))
 
 #empirical selection of bandwidth based on quantile in each row
@@ -46,7 +46,7 @@ image(S)
 
 ## Fit the model
 
-```{r,echo=FALSE}
+```{r}
 source("LatentSimplex.r")
 
 SC_fit<- SimplexClust(S,lambda = 0)
@@ -62,7 +62,7 @@ image(SC_fit$A)
 
 
 
-```{r,echo=FALSE}
+```{r}
 #plot the uncertainty
 ggplot(df)+ geom_point(aes(Y1,Y2,col=prob_assigning_to_cluster1))+
   scale_colour_gradientn(colours = rev(rainbow(2)))
