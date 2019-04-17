@@ -1,5 +1,5 @@
 ---
-title: "Illustration of the Simplex Clustering"
+title: "Illustration of the Latent Simplex Model for Fast Clustering with UQ"
 author: Leo Duan
 output: github_document
 ---
